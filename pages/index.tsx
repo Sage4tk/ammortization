@@ -85,7 +85,7 @@ const Table:React.FC<TableProps> = ({ form }) => {
   if (!form.amount || (!form.term || !form.interest)) return (null);
 
   return (
-    <table className="table shadow rounded" onClick={() => {console.log(rowInfo)}}>
+    <table className="table shadow rounded">
       <thead className='thead-dark'>
         <tr>
           <th className='px-4' scope='col'>#</th>
@@ -133,7 +133,7 @@ const calculateMonth = (start:number,apr:number, pd:number) => {
     startBalance: start,
     interest,
     principal,
-    endingBalance: (start - principal)
+    endingBalance: start - principal > 0 ? start - principal: 0
   }
 }
 
