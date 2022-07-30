@@ -78,7 +78,6 @@ const Table:React.FC<TableProps> = ({ form }) => {
           list = [...list, calculateMonth(list[i - 1].endingBalance, form.interest, pd)];
         }
       }
-      console.log(list)
       setRowInfo(list)
     }
   }, [form])
@@ -86,7 +85,7 @@ const Table:React.FC<TableProps> = ({ form }) => {
   if (!form.amount || (!form.term || !form.interest)) return (null);
 
   return (
-    <table className="table" onClick={() => {console.log(rowInfo)}}>
+    <table className="table shadow rounded" onClick={() => {console.log(rowInfo)}}>
       <thead className='thead-dark'>
         <tr>
           <th className='px-4' scope='col'>#</th>
@@ -108,29 +107,33 @@ const Table:React.FC<TableProps> = ({ form }) => {
 
 const TableRow:React.FC<any> = ({ data, rowNum }) => {
   return (
+    <>
     <tr>
       <th className="text-center" scope='row'>{rowNum + 1}</th>
-          <td className="text-center">${data.startBalance}</td>
+          <td className="text-center">${data.startBalance.toFixed(2)}</td>
           <td className="text-center">${data.interest.toFixed(2)}</td>
-          <td className="text-center">${data.principal}</td>
-          <td className="text-center">${data.endingBalance}</td>
+          <td className="text-center">${data.principal.toFixed(2)}</td>
+          <td className="text-center">${data.endingBalance.toFixed(2)}</td>
           <td className="text-center">
             <input className='m-auto' type="checkbox" />
           </td>
     </tr>
+    {(rowNum + 1) % 12 === 0 && <tr><th className='text-center' scope='rows' colSpan={6}>Year {(rowNum + 1).toFixed(2)  / 12} End</th></tr>}
+    </>
   )
 }
 
 //calculate function
 const calculateMonth = (start:number,apr:number, pd:number) => {
-  const interest = parseFloat((((apr / 12) / 100 * start)).toFixed(2));
+  const interest = (((apr / 12) / 100 * start));
 
   const principal = pd - interest;
+  console.log(start, (start - principal))
   return {
-    startBalance: parseFloat(start.toFixed(2)),
+    startBalance: start,
     interest,
-    principal: parseFloat(principal.toFixed(2)),
-    endingBalance: parseFloat((start - principal).toFixed(3))
+    principal,
+    endingBalance: (start - principal)
   }
 }
 
@@ -142,7 +145,7 @@ const paymentDue = (loanAmount: number, interestRate:number, term:number) => {
   //convert years to months
   const months = term * 12;
 
-  return parseFloat((((((1 + convertRate) ** months) * convertRate) / ((1 + convertRate) ** months - 1)) * loanAmount).toFixed(2))
+  return (((((1 + convertRate) ** months) * convertRate) / ((1 + convertRate) ** months - 1)) * loanAmount)
 }
 
 export default Home
